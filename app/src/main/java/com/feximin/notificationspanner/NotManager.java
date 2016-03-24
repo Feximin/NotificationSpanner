@@ -3,8 +3,6 @@ package com.feximin.notificationspanner;
 import android.app.NotificationManager;
 import android.content.Context;
 
-import com.mianmian.guild.util.SingletonFactory;
-
 /**
  * Created by Neo on 16/3/24.
  */
@@ -14,16 +12,17 @@ public class NotManager {
 
     private NotManager(){ }
 
-    public NotManager getInstance(Context context){
-        NotManager manager = SingletonFactory.getInstance(NotManager.class);
-        if (manager.mNotificationManager == null){
-            manager.mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+    private static final NotManager INSTANCE = new NotManager();
+
+    public static NotManager getInstance(Context context){
+        if (INSTANCE.mNotificationManager == null){
+            INSTANCE.mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         }
-        return manager;
+        return INSTANCE;
     }
 
     public void publish(Not not){
-        mNotificationManager.notify(not.getNid(), not.publish());
+        mNotificationManager.notify(not.getNid(), not.generateNotMeta().build());
     }
 
     public void cancel(Not noti){
